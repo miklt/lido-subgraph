@@ -3,3 +3,9 @@ node_modules
 /generated
 /build
 .env
+.idea/lido-subgraph.iml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/codeStyles/codeStyleConfig.xml
+.idea/codeStyles/Project.xml
+.idea/.gitignore
