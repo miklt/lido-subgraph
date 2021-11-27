@@ -652,10 +652,10 @@
     "@ethersproject/properties" "^5.5.0"
     "@ethersproject/strings" "^5.5.0"
 
-"@graphprotocol/graph-cli@0.23.0":
-  version "0.23.0"
-  resolved "https://registry.yarnpkg.com/@graphprotocol/graph-cli/-/graph-cli-0.23.0.tgz#c9158be747931585d27433aec58cb5766247952e"
-  integrity sha512-R1UYshDj2A3TPATWX2kd7OTn66XBNffoHTlkIYHXyoMViollSObHjGGlacO1V3B7NCFs6JnxPduHz4V9n3U2kg==
+"@graphprotocol/graph-cli@0.24.0":
+  version "0.24.0"
+  resolved "https://registry.yarnpkg.com/@graphprotocol/graph-cli/-/graph-cli-0.24.0.tgz#adcd14d78ce6119bfb940b8bf21ebc9450e4f254"
+  integrity sha512-vm+WXrmw3X3RbKB0X1ojdCKYHnzdqSomi9g7VoTvLBMX+0dBpHwpCnVFC+UP3DSBpy7dBqyVd76KXTofZeDMoA==
   dependencies:
     assemblyscript "0.19.10"
     binary-install-raw "0.0.13"
@@ -681,10 +681,10 @@
     which "2.0.2"
     yaml "^1.5.1"
 
-"@graphprotocol/graph-ts@0.23.1":
-  version "0.23.1"
-  resolved "https://registry.yarnpkg.com/@graphprotocol/graph-ts/-/graph-ts-0.23.1.tgz#76e595d26ec5672f3778b1d3830e4640a57aec1b"
-  integrity sha512-pipofvN1LlwLOXrS7IWy8hSBFZzVyVHdLXDpQskl9nKqdbb3chelj4JoVEzCl7klvomDpP84ngLpW17fBh5vww==
+"@graphprotocol/graph-ts@0.24.1":
+  version "0.24.1"
+  resolved "https://registry.yarnpkg.com/@graphprotocol/graph-ts/-/graph-ts-0.24.1.tgz#50961b52b5383f9c5cf5e6e23fa039f24e729ddf"
+  integrity sha512-2vU4m5ZPQIqMlMce/z5vmOtGHRlRmcRhMfemS3NIwxCSxSBGVnX2zb7QBTzzdQKGwsAZdbz6V0okkOtvohELfQ==
   dependencies:
     assemblyscript "0.19.10"
 
@@ -2511,10 +2511,10 @@ graphql-request@3.6.1:
     extract-files "^9.0.0"
     form-data "^3.0.0"
 
-graphql@16.0.0:
-  version "16.0.0"
-  resolved "https://registry.yarnpkg.com/graphql/-/graphql-16.0.0.tgz#5724f2767aefa543418e83671372117c39408c8f"
-  integrity sha512-n9NxoRfwnpYBZB/WJ7L166gyrShuZ8qYgVaX8oxVyELcJfAwkvwPt6WlYIl90WRlzqDjaNWvLmNOSnKs5llZWQ==
+graphql@16.0.1:
+  version "16.0.1"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-16.0.1.tgz#93a13cd4e0e38ca8d0832e79614c8578bfd34f10"
+  integrity sha512-oPvCuu6dlLdiz8gZupJ47o1clgb72r1u8NDBcQYjcV6G/iEdmE11B1bBlkhXRvV0LisP/SXRFP7tT6AgaTjpzg==
 
 graphql@^15.5.0:
   version "15.5.1"

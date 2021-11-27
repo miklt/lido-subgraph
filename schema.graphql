@@ -1,3 +1,13 @@
+
+type LidoEvent @entity {
+  id: ID!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  type: String!
+  totalPooledEther: BigInt! # 
+  totalShares: BigInt!  
+}
+
 """
 Lido
 """
@@ -289,101 +299,4 @@ type NodeOperator @entity {
   stakingLimit: BigInt!
   active: Boolean!
   totalStoppedValidators: BigInt
-}
-
-"""
-Voting
-"""
-type Voting @entity {
-  id: ID!
-
-  index: Int!
-  creator: Bytes!
-  metadata: String!
-  executed: Boolean!
-
-  votes: [Vote!]! @derivedFrom(field: "voting")
-}
-
-type Vote @entity {
-  id: ID!
-
-  voting: Voting!
-  voter: Bytes!
-  supports: Boolean!
-  stake: BigInt!
-}
-
-type ChangedSupportRequired @entity {
-  id: ID!
-
-  supportRequiredPct: BigInt!
-}
-
-type ChangedMinQuorum @entity {
-  id: ID!
-
-  minAcceptQuorumPct: BigInt!
-}
-
-"""
-Easytrack
-"""
-type Motion @entity {
-  id: ID!
-
-  creator: Bytes!
-  evmScriptFactory: Bytes!
-  duration: BigInt
-  startDate: BigInt!
-  snapshotBlock: BigInt!
-  objectionsAmount: BigInt!
-  objectionsAmountPct: BigInt!
-  objectionsThreshold: BigInt!
-  evmScriptHash: Bytes!
-  evmScriptCalldata: Bytes!
-  status: String!
-  enacted_at: BigInt
-  canceled_at: BigInt
-  rejected_at: BigInt
-}
-
-type EasyTrackConfig @entity {
-  id: ID!
-
-  implementation: Bytes!
-  admin: Bytes!
-  evmScriptExecutor: Bytes!
-  motionDuration: BigInt!
-  motionsCountLimit: BigInt!
-  objectionsThreshold: BigInt!
-  isPaused: Boolean!
-}
-
-type Role @entity {
-  id: ID!
-
-  role: Bytes!
-  address: Bytes!
-  creator: Bytes!
-  isActive: Boolean!
-}
-
-type EVMScriptFactory @entity {
-  id: ID!
-
-  address: Bytes!
-  permissions: Bytes!
-  isActive: Boolean!
-}
-
-type Objection @entity {
-  id: ID!
-
-  motionId: BigInt!
-  objector: Bytes!
-  weight: BigInt!
-
-  block: BigInt!
-  blockTime: BigInt!
 }
