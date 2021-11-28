@@ -27,6 +27,7 @@ import {
   BeaconReportReceiver,
   Totals,
   NodeOperatorsShares,
+  LidoEvent,
 } from '../generated/schema'
 
 import { CALCULATION_UNIT, DEPOSIT_AMOUNT, ZERO } from './constants'
@@ -52,7 +53,9 @@ export function handleCompleted(event: Completed): void {
       guessOracleRunsTotal(event.block.timestamp)
     )
   )
-
+  let lidoEvent = new LidoEvent(
+    event.transaction.hash.toHex() 
+  )
   let contract = loadLidoContract()
 
   newCompleted.epochId = event.params.epochId
@@ -196,6 +199,7 @@ export function handleCompleted(event: Completed): void {
   totalRewardsEntity.sharesToTreasury = sharesToTreasury
 
   totalRewardsEntity.save()
+  lidoEvent.save()
 }
 
 export function handleMemberAdded(event: MemberAdded): void {
@@ -244,7 +248,7 @@ export function handleContractVersionSet(event: ContractVersionSet): void {
 
 export function handlePostTotalShares(event: PostTotalShares): void {
   let contract = loadLidoContract()
-
+  let lidoEvent = LidoEvent.load(event.transaction.hash.toHex()) as LidoEvent
   let entity = TotalReward.load(event.transaction.hash.toHex()) as TotalReward
 
   let preTotalPooledEther = event.params.preTotalPooledEther
@@ -278,6 +282,7 @@ export function handlePostTotalShares(event: PostTotalShares): void {
   entity.blockTime = event.block.timestamp
 
   entity.save()
+  lidoEvent.save()
 }
 
 export function handleBeaconReported(event: BeaconReported): void {

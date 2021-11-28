@@ -4,8 +4,28 @@ type LidoEvent @entity {
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   type: String!
-  totalPooledEther: BigInt! # 
-  totalShares: BigInt!  
+  # LidoTransfer
+  totalPooledEtherAfter: BigInt! # 
+  totalPooledEtherBefore: BigInt!
+  totalSharesAfter: BigInt!  
+  totalShareBefore: BigInt!  
+  transferAmount: BigInt!
+  balanceAfter: BigInt!
+  from: Bytes!
+  to: Bytes!
+  # LidoSubmission
+  sender: Bytes!
+  # TotalReward
+  totalRewards: BigInt
+  totalRewardsWithFees: BigInt
+  totalFee: BigInt
+  shares2mint: BigInt
+  sharesToInsuranceFund: BigInt
+  sharesToOperators: BigInt
+  sharesToTreasury:BigInt
+  aprBeforeFees: BigDecimal
+  apr: BigDecimal
+
 }
 
 """

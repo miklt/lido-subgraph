@@ -29,6 +29,7 @@ import {
   NodeOperatorsShares,
   Shares,
   Holder,
+  LidoEvent,
 } from '../generated/schema'
 
 import { ZERO, getAddress, DUST_BOUNDARY } from './constants'
@@ -58,6 +59,19 @@ export function handleResumed(event: Resumed): void {
 }
 
 export function handleTransfer(event: Transfer): void {
+  // new lido event.
+  let lidoEvent = LidoEvent.load(event.transaction.hash.toHex()) 
+  if (lidoEvent == null){
+    lidoEvent = new LidoEvent(
+      event.transaction.hash.toHex() 
+    )
+  }
+  lidoEvent.blockNumber = event.block.number
+  lidoEvent.blockTimestamp = event.block.timestamp
+  lidoEvent.from = event.params.from
+  // end creation of lido event
+
+
   let entity = new LidoTransfer(
     event.transaction.hash.toHex() + '-' + event.logIndex.toString()
   )
@@ -88,6 +102,11 @@ export function handleTransfer(event: Transfer): void {
 
   entity.totalPooledEther = totals.totalPooledEther
   entity.totalShares = totals.totalShares
+
+  // setting totals
+  
+  // end setting
+
 
   let shares = event.params.value
     .times(totals.totalShares)
@@ -211,8 +230,9 @@ export function handleTransfer(event: Transfer): void {
       .sharesAfterIncrease!.times(totals.totalPooledEther)
       .div(totals.totalShares)
   }
-
+  
   entity.save()
+  lidoEvent.save()
 
   // Saving recipient address as a unique stETH holder
   if (event.params.value.gt(ZERO)) {
@@ -294,9 +314,15 @@ export function handleWithdrawalCredentialsSet(
 }
 
 export function handleSubmit(event: Submitted): void {
+
+  // Create the lido event in this method...
   let entity = new LidoSubmission(
     event.transaction.hash.toHex() + '-' + event.logIndex.toString()
   )
+  let lidoEvent = new LidoEvent(
+    event.transaction.hash.toHex() 
+  )
+
 
   // Loading totals
   let totals = Totals.load('')
@@ -356,6 +382,7 @@ export function handleSubmit(event: Submitted): void {
   entity.save()
   sharesEntity.save()
   totals.save()
+  lidoEvent.save()
 }
 
 export function handleUnbuffered(event: Unbuffered): void {
