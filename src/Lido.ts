@@ -232,6 +232,22 @@ export function handleTransfer(event: Transfer): void {
   }
   
   entity.save()
+
+  lidoEvent.totalPooledEtherAfter = entity.totalPooledEther
+  lidoEvent.totalSharesAfter = entity.totalShares
+  if (totalRewardsEntity) {
+    if (totalRewardsEntity.totalRewards){
+      lidoEvent.totalRewards = totalRewardsEntity.totalRewards
+    }
+    lidoEvent.apr = totalRewardsEntity.apr
+    lidoEvent.aprBeforeFees = totalRewardsEntity.aprBeforeFees
+    lidoEvent.totalRewards = totalRewardsEntity.totalRewards
+    lidoEvent.totalRewardsWithFees = totalRewardsEntity.totalRewardsWithFees
+    lidoEvent.shares2mint = totalRewardsEntity.shares2mint   
+    lidoEvent.totalPooledEtherBefore = totalRewardsEntity.totalPooledEtherBefore
+    lidoEvent.totalShareBefore = totalRewardsEntity.totalSharesBefore 
+  }
+
   lidoEvent.save()
 
   // Saving recipient address as a unique stETH holder
@@ -319,9 +335,12 @@ export function handleSubmit(event: Submitted): void {
   let entity = new LidoSubmission(
     event.transaction.hash.toHex() + '-' + event.logIndex.toString()
   )
-  let lidoEvent = new LidoEvent(
-    event.transaction.hash.toHex() 
-  )
+  let lidoEvent = LidoEvent.load(event.transaction.hash.toHex()) 
+  if (lidoEvent == null){
+    lidoEvent = new LidoEvent(
+      event.transaction.hash.toHex() 
+    )
+  }
 
 
   // Loading totals
@@ -382,6 +401,11 @@ export function handleSubmit(event: Submitted): void {
   entity.save()
   sharesEntity.save()
   totals.save()
+
+  lidoEvent.totalPooledEtherBefore = entity.totalPooledEtherBefore
+  lidoEvent.totalPooledEtherAfter = entity.totalPooledEtherAfter
+  lidoEvent.totalShareBefore = entity.totalSharesBefore
+  lidoEvent.totalSharesAfter = entity.totalSharesAfter
   lidoEvent.save()
 }
 
