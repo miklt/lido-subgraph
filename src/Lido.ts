@@ -69,6 +69,9 @@ export function handleTransfer(event: Transfer): void {
   lidoEvent.blockNumber = event.block.number
   lidoEvent.blockTimestamp = event.block.timestamp
   lidoEvent.from = event.params.from
+  lidoEvent.to = event.params.to
+  lidoEvent.transferAmount = event.params.value
+
   // end creation of lido event
 
 
@@ -243,9 +246,13 @@ export function handleTransfer(event: Transfer): void {
     lidoEvent.aprBeforeFees = totalRewardsEntity.aprBeforeFees
     lidoEvent.totalRewards = totalRewardsEntity.totalRewards
     lidoEvent.totalRewardsWithFees = totalRewardsEntity.totalRewardsWithFees
-    lidoEvent.shares2mint = totalRewardsEntity.shares2mint   
+    lidoEvent.shares2mint = totalRewardsEntity.shares2mint       
     lidoEvent.totalPooledEtherBefore = totalRewardsEntity.totalPooledEtherBefore
     lidoEvent.totalShareBefore = totalRewardsEntity.totalSharesBefore 
+  }
+  if (!fromZeros){
+    lidoEvent.totalPooledEtherBefore = lidoEvent.totalPooledEtherAfter
+    lidoEvent.totalShareBefore = lidoEvent.totalSharesAfter
   }
 
   lidoEvent.save()
