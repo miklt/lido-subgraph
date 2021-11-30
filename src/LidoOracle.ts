@@ -53,9 +53,12 @@ export function handleCompleted(event: Completed): void {
       guessOracleRunsTotal(event.block.timestamp)
     )
   )
-  let lidoEvent = new LidoEvent(
-    event.transaction.hash.toHex() 
-  )
+  let lidoEvent = LidoEvent.load(event.transaction.hash.toHex()) 
+  if (lidoEvent == null){
+    lidoEvent = new LidoEvent(
+      event.transaction.hash.toHex() 
+    )
+  }
   let contract = loadLidoContract()
 
   newCompleted.epochId = event.params.epochId
@@ -199,6 +202,9 @@ export function handleCompleted(event: Completed): void {
   totalRewardsEntity.sharesToTreasury = sharesToTreasury
 
   totalRewardsEntity.save()
+  lidoEvent.totalPooledEtherBefore = totalRewardsEntity.totalPooledEtherBefore
+  lidoEvent.totalPooledEtherAfter = totalRewardsEntity.totalPooledEtherAfter
+  lidoEvent.totalShareBefore = totalRewardsEntity.totalPooledEtherBefore
   lidoEvent.save()
 }
 
@@ -249,6 +255,11 @@ export function handleContractVersionSet(event: ContractVersionSet): void {
 export function handlePostTotalShares(event: PostTotalShares): void {
   let contract = loadLidoContract()
   let lidoEvent = LidoEvent.load(event.transaction.hash.toHex()) as LidoEvent
+  if (lidoEvent == null){
+    lidoEvent = new LidoEvent(
+      event.transaction.hash.toHex() 
+    )
+  }
   let entity = TotalReward.load(event.transaction.hash.toHex()) as TotalReward
 
   let preTotalPooledEther = event.params.preTotalPooledEther
@@ -282,6 +293,8 @@ export function handlePostTotalShares(event: PostTotalShares): void {
   entity.blockTime = event.block.timestamp
 
   entity.save()
+  lidoEvent.apr = entity.apr
+  lidoEvent.aprBeforeFees = entity.aprBeforeFees
   lidoEvent.save()
 }
 
