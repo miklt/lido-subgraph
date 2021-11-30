@@ -13,16 +13,11 @@ import {
   Withdrawal,
 } from '../generated/Lido/Lido'
 import {
-  LidoStopped,
-  LidoResumed,
-  LidoTransfer,
-  LidoApproval,
-  LidoFee,
-  LidoFeeDistribution,
-  LidoWithdrawalCredential,
-  LidoSubmission,
-  LidoUnbuffered,
+  
+  LidoTransfer,  
+  LidoSubmission,  
   LidoWithdrawal,
+  
   TotalReward,
   NodeOperatorFees,
   Totals,
@@ -36,27 +31,9 @@ import { ZERO, getAddress, DUST_BOUNDARY } from './constants'
 
 import { wcKeyCrops } from './wcKeyCrops'
 
-export function handleStopped(event: Stopped): void {
-  let entity = new LidoStopped(
-    event.transaction.hash.toHex() + '-' + event.logIndex.toString()
-  )
 
-  entity.block = event.block.number
-  entity.blockTime = event.block.timestamp
 
-  entity.save()
-}
 
-export function handleResumed(event: Resumed): void {
-  let entity = new LidoResumed(
-    event.transaction.hash.toHex() + '-' + event.logIndex.toString()
-  )
-
-  entity.block = event.block.number
-  entity.blockTime = event.block.timestamp
-
-  entity.save()
-}
 
 export function handleTransfer(event: Transfer): void {
   // new lido event.
@@ -269,72 +246,13 @@ export function handleTransfer(event: Transfer): void {
   }
 }
 
-export function handleApproval(event: Approval): void {
-  let entity = new LidoApproval(
-    event.transaction.hash.toHex() + '-' + event.logIndex.toString()
-  )
 
-  entity.owner = event.params.owner
-  entity.spender = event.params.spender
-  entity.value = event.params.value
 
-  entity.save()
-}
+ 
 
-export function handleFeeSet(event: FeeSet): void {
-  let entity = new LidoFee(
-    event.transaction.hash.toHex() + '-' + event.logIndex.toString()
-  )
+ 
 
-  entity.feeBasisPoints = event.params.feeBasisPoints
-
-  entity.save()
-}
-
-export function handleFeeDistributionSet(event: FeeDistributionSet): void {
-  let entity = new LidoFeeDistribution(
-    event.transaction.hash.toHex() + '-' + event.logIndex.toString()
-  )
-
-  entity.treasuryFeeBasisPoints = event.params.treasuryFeeBasisPoints
-  entity.insuranceFeeBasisPoints = event.params.insuranceFeeBasisPoints
-  entity.operatorsFeeBasisPoints = event.params.operatorsFeeBasisPoints
-
-  entity.save()
-}
-
-export function handleWithdrawalCredentialsSet(
-  event: WithdrawalCredentialsSet
-): void {
-  let entity = new LidoWithdrawalCredential(
-    event.params.withdrawalCredentials.toHexString()
-  )
-
-  entity.withdrawalCredentials = event.params.withdrawalCredentials
-
-  entity.block = event.block.number
-  entity.blockTime = event.block.number
-
-  entity.save()
-
-  // Cropping unused keys on withdrawal credentials change
-  if (
-    event.params.withdrawalCredentials.toHexString() ==
-    '0x010000000000000000000000b9d7934878b5fb9610b3fe8a5e441e8fad7e293f'
-  ) {
-    let keys = wcKeyCrops.get(
-      '0x010000000000000000000000b9d7934878b5fb9610b3fe8a5e441e8fad7e293f'
-    )
-
-    let length = keys.length
-
-    // There is no for...of loop in AS
-    for (let i = 0; i < length; i++) {
-      let key = keys[i]
-      store.remove('NodeOperatorSigningKey', key)
-    }
-  }
-}
+ 
 
 export function handleSubmit(event: Submitted): void {
 
@@ -415,16 +333,7 @@ export function handleSubmit(event: Submitted): void {
   lidoEvent.totalSharesAfter = entity.totalSharesAfter
   lidoEvent.save()
 }
-
-export function handleUnbuffered(event: Unbuffered): void {
-  let entity = new LidoUnbuffered(
-    event.transaction.hash.toHex() + '-' + event.logIndex.toString()
-  )
-
-  entity.amount = event.params.amount
-
-  entity.save()
-}
+ 
 
 export function handleWithdrawal(event: Withdrawal): void {
   let entity = new LidoWithdrawal(

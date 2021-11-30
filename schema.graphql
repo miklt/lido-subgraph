@@ -1,190 +1,3 @@
-
-type LidoEvent @entity {
-  id: ID!
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  type: String!
-  # LidoTransfer
-  totalPooledEtherAfter: BigInt! # 
-  totalPooledEtherBefore: BigInt!
-  totalSharesAfter: BigInt!  
-  totalShareBefore: BigInt!  
-  transferAmount: BigInt!
-  balanceAfter: BigInt!
-  from: Bytes!
-  to: Bytes!
-  # LidoSubmission
-  sender: Bytes!
-  # TotalReward
-  totalRewards: BigInt
-  totalRewardsWithFees: BigInt
-  totalFee: BigInt
-  shares2mint: BigInt
-  sharesToInsuranceFund: BigInt
-  sharesToOperators: BigInt
-  sharesToTreasury:BigInt
-  aprBeforeFees: BigDecimal
-  apr: BigDecimal
-
-}
-
-"""
-Lido
-"""
-type LidoStopped @entity {
-  id: ID!
-
-  block: BigInt!
-  blockTime: BigInt!
-}
-
-type LidoResumed @entity {
-  id: ID!
-
-  block: BigInt!
-  blockTime: BigInt!
-}
-
-type LidoTransfer @entity {
-  id: ID!
-
-  from: Bytes!
-  to: Bytes!
-  value: BigInt!
-
-  shares: BigInt
-  sharesBeforeDecrease: BigInt
-  sharesAfterDecrease: BigInt
-  sharesBeforeIncrease: BigInt
-  sharesAfterIncrease: BigInt
-
-  mintWithoutSubmission: Boolean!
-
-  totalPooledEther: BigInt!
-  totalShares: BigInt!
-
-  balanceAfterDecrease: BigInt
-  balanceAfterIncrease: BigInt
-
-  block: BigInt!
-  blockTime: BigInt!
-  transactionHash: Bytes!
-  transactionIndex: BigInt!
-  logIndex: BigInt!
-  transactionLogIndex: BigInt!
-}
-
-type LidoApproval @entity {
-  id: ID!
-
-  owner: Bytes!
-  spender: Bytes!
-  value: BigInt!
-}
-
-type LidoFee @entity {
-  id: ID!
-
-  feeBasisPoints: Int!
-}
-
-type LidoFeeDistribution @entity {
-  id: ID!
-
-  treasuryFeeBasisPoints: Int!
-  insuranceFeeBasisPoints: Int!
-  operatorsFeeBasisPoints: Int!
-}
-
-type LidoWithdrawalCredential @entity {
-  id: ID!
-
-  withdrawalCredentials: Bytes!
-
-  block: BigInt!
-  blockTime: BigInt!
-}
-
-type LidoSubmission @entity {
-  id: ID!
-
-  sender: Bytes!
-  amount: BigInt!
-  referral: Bytes!
-
-  shares: BigInt!
-  sharesBefore: BigInt!
-  sharesAfter: BigInt!
-
-  totalPooledEtherBefore: BigInt!
-  totalPooledEtherAfter: BigInt!
-  totalSharesBefore: BigInt!
-  totalSharesAfter: BigInt!
-
-  balanceAfter: BigInt!
-
-  block: BigInt!
-  blockTime: BigInt!
-  transactionHash: Bytes!
-  transactionIndex: BigInt!
-  logIndex: BigInt!
-  transactionLogIndex: BigInt!
-}
-
-type LidoUnbuffered @entity {
-  id: ID!
-
-  amount: BigInt!
-}
-
-type LidoWithdrawal @entity {
-  id: ID!
-
-  sender: Bytes!
-  tokenAmount: BigInt!
-  sentFromBuffer: BigInt!
-  pubkeyHash: Bytes!
-  etherAmount: BigInt!
-}
-
-type NodeOperatorFees @entity {
-  id: ID!
-  totalReward: TotalReward!
-
-  address: Bytes!
-  fee: BigInt!
-}
-
-type NodeOperatorsShares @entity {
-  id: ID!
-  totalReward: TotalReward!
-
-  address: Bytes!
-  shares: BigInt!
-}
-
-type Totals @entity {
-  id: ID!
-
-  totalPooledEther: BigInt!
-  totalShares: BigInt!
-}
-
-type Shares @entity {
-  id: ID!
-
-  shares: BigInt!
-}
-
-type Holder @entity {
-  id: ID!
-
-  address: Bytes!
-}
-
-"""
-LidoOracle
-"""
 type OracleCompleted @entity {
   id: ID!
 
@@ -236,73 +49,266 @@ type TotalReward @entity {
   transactionLogIndex: BigInt!
 }
 
-type OracleMember @entity {
+type LidoSubmission @entity {
   id: ID!
 
-  member: Bytes!
-  removed: Boolean!
-}
+  sender: Bytes!
+  amount: BigInt!
+  referral: Bytes!
 
-type OracleQuorumChange @entity {
-  id: ID!
+  shares: BigInt!
+  sharesBefore: BigInt!
+  sharesAfter: BigInt!
 
-  quorum: BigInt!
-}
+  totalPooledEtherBefore: BigInt!
+  totalPooledEtherAfter: BigInt!
+  totalSharesBefore: BigInt!
+  totalSharesAfter: BigInt!
 
-type OracleVersion @entity {
-  id: ID!
-
-  version: BigInt!
+  balanceAfter: BigInt!
 
   block: BigInt!
   blockTime: BigInt!
+  transactionHash: Bytes!
+  transactionIndex: BigInt!
+  logIndex: BigInt!
+  transactionLogIndex: BigInt!
 }
 
-type AllowedBeaconBalanceRelativeDecrease @entity {
+type LidoTransfer @entity {
   id: ID!
 
+  from: Bytes!
+  to: Bytes!
   value: BigInt!
+
+  shares: BigInt
+  sharesBeforeDecrease: BigInt
+  sharesAfterDecrease: BigInt
+  sharesBeforeIncrease: BigInt
+  sharesAfterIncrease: BigInt
+
+  mintWithoutSubmission: Boolean!
+
+  totalPooledEther: BigInt!
+  totalShares: BigInt!
+
+  balanceAfterDecrease: BigInt
+  balanceAfterIncrease: BigInt
+
+  block: BigInt!
+  blockTime: BigInt!
+  transactionHash: Bytes!
+  transactionIndex: BigInt!
+  logIndex: BigInt!
+  transactionLogIndex: BigInt!
 }
 
-type AllowedBeaconBalanceAnnualRelativeIncrease @entity {
-  id: ID!
 
-  value: BigInt!
+type LidoEvent @entity {
+  id: ID!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  type: String!
+  # LidoTransfer
+  totalPooledEtherAfter: BigInt! # 
+  totalPooledEtherBefore: BigInt!
+  totalSharesAfter: BigInt!  
+  totalShareBefore: BigInt!  
+  transferAmount: BigInt!
+  balanceAfter: BigInt!
+  from: Bytes!
+  to: Bytes!
+  # LidoSubmission
+  sender: Bytes!
+  # TotalReward
+  totalRewards: BigInt
+  totalRewardsWithFees: BigInt
+  totalFee: BigInt
+  shares2mint: BigInt
+  sharesToInsuranceFund: BigInt
+  sharesToOperators: BigInt
+  sharesToTreasury:BigInt
+  aprBeforeFees: BigDecimal
+  apr: BigDecimal
+
 }
 
-type OracleExpectedEpoch @entity {
+#"""
+#Lido
+#"""
+# type LidoStopped @entity {
+#   id: ID!
+
+#   block: BigInt!
+#   blockTime: BigInt!
+# }
+
+# type LidoResumed @entity {
+#   id: ID!
+
+#   block: BigInt!
+#   blockTime: BigInt!
+# }
+
+
+# type LidoApproval @entity {
+#   id: ID!
+
+#   owner: Bytes!
+#   spender: Bytes!
+#   value: BigInt!
+# }
+
+# type LidoFee @entity {
+#   id: ID!
+
+#   feeBasisPoints: Int!
+# }
+
+# type LidoFeeDistribution @entity {
+#   id: ID!
+
+#   treasuryFeeBasisPoints: Int!
+#   insuranceFeeBasisPoints: Int!
+#   operatorsFeeBasisPoints: Int!
+# }
+
+# type LidoWithdrawalCredential @entity {
+#   id: ID!
+
+#   withdrawalCredentials: Bytes!
+
+#   block: BigInt!
+#   blockTime: BigInt!
+# }
+
+
+
+# type LidoUnbuffered @entity {
+#   id: ID!
+
+#   amount: BigInt!
+# }
+
+type LidoWithdrawal @entity {
   id: ID!
 
-  epochId: BigInt!
+  sender: Bytes!
+  tokenAmount: BigInt!
+  sentFromBuffer: BigInt!
+  pubkeyHash: Bytes!
+  etherAmount: BigInt!
 }
 
-type BeaconReport @entity {
+type NodeOperatorFees @entity {
   id: ID!
+  totalReward: TotalReward!
 
-  epochId: BigInt!
-  beaconBalance: BigInt!
-  beaconValidators: BigInt!
-  caller: Bytes!
+  address: Bytes!
+  fee: BigInt!
 }
 
-type BeaconSpec @entity {
+type NodeOperatorsShares @entity {
   id: ID!
+  totalReward: TotalReward!
 
-  epochsPerFrame: BigInt!
-  slotsPerEpoch: BigInt!
-  secondsPerSlot: BigInt!
-  genesisTime: BigInt!
+  address: Bytes!
+  shares: BigInt!
 }
 
-type BeaconReportReceiver @entity {
+type Totals @entity {
   id: ID!
 
-  callback: Bytes!
+  totalPooledEther: BigInt!
+  totalShares: BigInt!
+}
+
+type Shares @entity {
+  id: ID!
+
+  shares: BigInt!
+}
+
+type Holder @entity {
+  id: ID!
+
+  address: Bytes!
 }
 
 """
-NodeOperatorsRegistry
+LidoOracle
 """
+
+
+# type OracleMember @entity {
+#   id: ID!
+
+#   member: Bytes!
+#   removed: Boolean!
+# }
+
+# type OracleQuorumChange @entity {
+#   id: ID!
+
+#   quorum: BigInt!
+# }
+
+# type OracleVersion @entity {
+#   id: ID!
+
+#   version: BigInt!
+
+#   block: BigInt!
+#   blockTime: BigInt!
+# }
+
+# type AllowedBeaconBalanceRelativeDecrease @entity {
+#   id: ID!
+
+#   value: BigInt!
+# }
+
+# type AllowedBeaconBalanceAnnualRelativeIncrease @entity {
+#   id: ID!
+
+#   value: BigInt!
+# }
+
+# type OracleExpectedEpoch @entity {
+#   id: ID!
+
+#   epochId: BigInt!
+# }
+
+# type BeaconReport @entity {
+#   id: ID!
+
+#   epochId: BigInt!
+#   beaconBalance: BigInt!
+#   beaconValidators: BigInt!
+#   caller: Bytes!
+# }
+
+# type BeaconSpec @entity {
+#   id: ID!
+
+#   epochsPerFrame: BigInt!
+#   slotsPerEpoch: BigInt!
+#   secondsPerSlot: BigInt!
+#   genesisTime: BigInt!
+# }
+
+# type BeaconReportReceiver @entity {
+#   id: ID!
+
+#   callback: Bytes!
+# }
+
+#"""
+#NodeOperatorsRegistry
+#"""
+
 type NodeOperatorSigningKey @entity {
   id: ID!
 

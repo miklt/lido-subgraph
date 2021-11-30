@@ -15,16 +15,9 @@ import {
 } from '../generated/LidoOracle/LidoOracle'
 import {
   OracleCompleted,
-  OracleMember,
-  OracleQuorumChange,
+  
   TotalReward,
-  OracleVersion,
-  AllowedBeaconBalanceRelativeDecrease,
-  AllowedBeaconBalanceAnnualRelativeIncrease,
-  OracleExpectedEpoch,
-  BeaconReport,
-  BeaconSpec,
-  BeaconReportReceiver,
+  
   Totals,
   NodeOperatorsShares,
   LidoEvent,
@@ -208,49 +201,7 @@ export function handleCompleted(event: Completed): void {
   lidoEvent.save()
 }
 
-export function handleMemberAdded(event: MemberAdded): void {
-  let entity = new OracleMember(event.params.member.toHexString())
 
-  entity.member = event.params.member
-  entity.removed = false
-
-  entity.save()
-}
-
-export function handleMemberRemoved(event: MemberRemoved): void {
-  let entity = OracleMember.load(event.params.member.toHexString())
-
-  if (entity == null) {
-    entity = new OracleMember(event.params.member.toHexString())
-  }
-
-  entity.removed = true
-
-  entity.save()
-}
-
-export function handleQuorumChanged(event: QuorumChanged): void {
-  let entity = new OracleQuorumChange(
-    event.transaction.hash.toHex() + event.logIndex.toString()
-  )
-
-  entity.quorum = event.params.quorum
-
-  entity.save()
-}
-
-export function handleContractVersionSet(event: ContractVersionSet): void {
-  let entity = new OracleVersion(
-    event.transaction.hash.toHex() + '-' + event.logIndex.toString()
-  )
-
-  entity.version = event.params.version
-
-  entity.block = event.block.number
-  entity.blockTime = event.block.timestamp
-
-  entity.save()
-}
 
 export function handlePostTotalShares(event: PostTotalShares): void {
   let contract = loadLidoContract()
@@ -298,76 +249,9 @@ export function handlePostTotalShares(event: PostTotalShares): void {
   lidoEvent.save()
 }
 
-export function handleBeaconReported(event: BeaconReported): void {
-  let entity = new BeaconReport(
-    event.transaction.hash.toHex() + '-' + event.logIndex.toString()
-  )
 
-  entity.epochId = event.params.epochId
-  entity.beaconBalance = event.params.beaconBalance
-  entity.beaconValidators = event.params.beaconValidators
-  entity.caller = event.params.caller
 
-  entity.save()
-}
 
-export function handleBeaconSpecSet(event: BeaconSpecSet): void {
-  let entity = new BeaconSpec(
-    event.transaction.hash.toHex() + '-' + event.logIndex.toString()
-  )
 
-  entity.epochsPerFrame = event.params.epochsPerFrame
-  entity.slotsPerEpoch = event.params.slotsPerEpoch
-  entity.secondsPerSlot = event.params.secondsPerSlot
-  entity.genesisTime = event.params.genesisTime
 
-  entity.save()
-}
 
-export function handleExpectedEpochIdUpdated(
-  event: ExpectedEpochIdUpdated
-): void {
-  let entity = new OracleExpectedEpoch(
-    event.transaction.hash.toHex() + '-' + event.logIndex.toString()
-  )
-
-  entity.epochId = event.params.epochId
-
-  entity.save()
-}
-
-export function handleBeaconReportReceiverSet(
-  event: BeaconReportReceiverSet
-): void {
-  let entity = new BeaconReportReceiver(
-    event.transaction.hash.toHex() + '-' + event.logIndex.toString()
-  )
-
-  entity.callback = event.params.callback
-
-  entity.save()
-}
-
-export function handleAllowedBeaconBalanceRelativeDecreaseSet(
-  event: AllowedBeaconBalanceRelativeDecreaseSet
-): void {
-  let entity = new AllowedBeaconBalanceRelativeDecrease(
-    event.transaction.hash.toHex() + '-' + event.logIndex.toString()
-  )
-
-  entity.value = event.params.value
-
-  entity.save()
-}
-
-export function handleAllowedBeaconBalanceAnnualRelativeIncreaseSet(
-  event: AllowedBeaconBalanceAnnualRelativeIncreaseSet
-): void {
-  let entity = new AllowedBeaconBalanceAnnualRelativeIncrease(
-    event.transaction.hash.toHex() + '-' + event.logIndex.toString()
-  )
-
-  entity.value = event.params.value
-
-  entity.save()
-}

@@ -14,38 +14,17 @@ dataSources:
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - LidoStopped
-        - LidoResumed
         - LidoTransfer
-        - LidoApproval
-        - LidoFee
-        - LidoFeeDistribution
-        - LidoWithdrawalCredential
-        - LidoSubmission
-        - LidoUnbuffered
+        - LidoSubmission        
         - LidoWithdrawal
       abis:
         - name: Lido
           file: ./abis/Lido.json
-      eventHandlers:
-        - event: Stopped()
-          handler: handleStopped
-        - event: Resumed()
-          handler: handleResumed
+      eventHandlers:        
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
-        - event: Approval(indexed address,indexed address,uint256)
-          handler: handleApproval
-        - event: FeeSet(uint16)
-          handler: handleFeeSet
-        - event: FeeDistributionSet(uint16,uint16,uint16)
-          handler: handleFeeDistributionSet
-        - event: WithdrawalCredentialsSet(bytes32)
-          handler: handleWithdrawalCredentialsSet
         - event: Submitted(indexed address,uint256,address)
-          handler: handleSubmit
-        - event: Unbuffered(uint256)
-          handler: handleUnbuffered
+          handler: handleSubmit        
         - event: Withdrawal(indexed address,uint256,uint256,indexed bytes32,uint256)
           handler: handleWithdrawal
       file: ./src/Lido.ts
@@ -62,17 +41,7 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - OracleCompleted
-        - OracleMember
-        - OracleQuorumChange
-        - SharesToStethRatio
-        - OracleVersion
-        - AllowedBeaconBalanceRelativeDecrease
-        - AllowedBeaconBalanceAnnualRelativeIncrease
-        - OracleExpectedEpoch
-        - OracleTotalShares
-        - BeaconReport
-        - BeaconSpec
-        - BeaconReportReceiver
+        - OracleTotalShares        
       abis:
         - name: LidoOracle
           file: ./abis/LidoOracle.json
@@ -82,29 +51,9 @@ dataSources:
           file: ./abis/NodeOperatorsRegistry.json
       eventHandlers:
         - event: Completed(uint256,uint128,uint128)
-          handler: handleCompleted
-        - event: MemberAdded(address)
-          handler: handleMemberAdded
-        - event: MemberRemoved(address)
-          handler: handleMemberRemoved
-        - event: QuorumChanged(uint256)
-          handler: handleQuorumChanged
-        - event: ContractVersionSet(uint256)
-          handler: handleContractVersionSet
+          handler: handleCompleted        
         - event: PostTotalShares(uint256,uint256,uint256,uint256)
-          handler: handlePostTotalShares
-        - event: BeaconReported(uint256,uint128,uint128,address)
-          handler: handleBeaconReported
-        - event: BeaconSpecSet(uint64,uint64,uint64,uint64)
-          handler: handleBeaconSpecSet
-        - event: ExpectedEpochIdUpdated(uint256)
-          handler: handleExpectedEpochIdUpdated
-        - event: BeaconReportReceiverSet(address)
-          handler: handleBeaconReportReceiverSet
-        - event: AllowedBeaconBalanceRelativeDecreaseSet(uint256)
-          handler: handleAllowedBeaconBalanceRelativeDecreaseSet
-        - event: AllowedBeaconBalanceAnnualRelativeIncreaseSet(uint256)
-          handler: handleAllowedBeaconBalanceAnnualRelativeIncreaseSet
+          handler: handlePostTotalShares        
       file: ./src/LidoOracle.ts
   - kind: ethereum/contract
     name: NodeOperatorsRegistry
