@@ -1,23 +1,17 @@
 import { Address } from '@graphprotocol/graph-ts'
 import { store } from '@graphprotocol/graph-ts'
-import {
-  Stopped,
-  Resumed,
+import {  
   Transfer,
-  Approval,
-  FeeSet,
-  FeeDistributionSet,
-  WithdrawalCredentialsSet,
+  
   Submitted,
-  Unbuffered,
+  
   Withdrawal,
 } from '../generated/Lido/Lido'
 import {
   
   LidoTransfer,  
   LidoSubmission,  
-  LidoWithdrawal,
-  
+  LidoWithdrawal,  
   TotalReward,
   NodeOperatorFees,
   Totals,
@@ -28,9 +22,6 @@ import {
 } from '../generated/schema'
 
 import { ZERO, getAddress, DUST_BOUNDARY } from './constants'
-
-import { wcKeyCrops } from './wcKeyCrops'
-
 
 
 
@@ -47,7 +38,7 @@ export function handleTransfer(event: Transfer): void {
   lidoEvent.blockTimestamp = event.block.timestamp
   lidoEvent.from = event.params.from
   lidoEvent.to = event.params.to
-  lidoEvent.transferAmount = event.params.value
+  lidoEvent.tokenAmount = event.params.value
 
   // end creation of lido event
 
@@ -327,6 +318,10 @@ export function handleSubmit(event: Submitted): void {
   sharesEntity.save()
   totals.save()
 
+  lidoEvent.blockNumber = entity.block
+  lidoEvent.blockTimestamp = entity.blockTime
+  lidoEvent.tokenAmount = entity.amount
+  lidoEvent.sender = entity.sender  
   lidoEvent.totalPooledEtherBefore = entity.totalPooledEtherBefore
   lidoEvent.totalPooledEtherAfter = entity.totalPooledEtherAfter
   lidoEvent.totalShareBefore = entity.totalSharesBefore
@@ -339,6 +334,12 @@ export function handleWithdrawal(event: Withdrawal): void {
   let entity = new LidoWithdrawal(
     event.transaction.hash.toHex() + '-' + event.logIndex.toString()
   )
+  let lidoEvent = LidoEvent.load(event.transaction.hash.toHex()) 
+  if (lidoEvent == null){
+    lidoEvent = new LidoEvent(
+      event.transaction.hash.toHex() 
+    )
+  }
 
   entity.sender = event.params.sender
   entity.tokenAmount = event.params.tokenAmount
@@ -347,4 +348,9 @@ export function handleWithdrawal(event: Withdrawal): void {
   entity.etherAmount = event.params.etherAmount
 
   entity.save()
+  lidoEvent.blockNumber = event.block.number
+  lidoEvent.blockTimestamp = event.block.timestamp
+  lidoEvent.sender = entity.sender
+  lidoEvent.tokenAmount = entity.tokenAmount
+
 }

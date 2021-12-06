@@ -15,16 +15,16 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - LidoTransfer
-        - LidoSubmission        
+        - LidoSubmission
         - LidoWithdrawal
       abis:
         - name: Lido
           file: ./abis/Lido.json
-      eventHandlers:        
+      eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
         - event: Submitted(indexed address,uint256,address)
-          handler: handleSubmit        
+          handler: handleSubmit
         - event: Withdrawal(indexed address,uint256,uint256,indexed bytes32,uint256)
           handler: handleWithdrawal
       file: ./src/Lido.ts
@@ -41,7 +41,7 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - OracleCompleted
-        - OracleTotalShares        
+        - OracleTotalShares
       abis:
         - name: LidoOracle
           file: ./abis/LidoOracle.json
@@ -51,9 +51,9 @@ dataSources:
           file: ./abis/NodeOperatorsRegistry.json
       eventHandlers:
         - event: Completed(uint256,uint128,uint128)
-          handler: handleCompleted        
+          handler: handleCompleted
         - event: PostTotalShares(uint256,uint256,uint256,uint256)
-          handler: handlePostTotalShares        
+          handler: handlePostTotalShares
       file: ./src/LidoOracle.ts
   - kind: ethereum/contract
     name: NodeOperatorsRegistry
@@ -75,19 +75,18 @@ dataSources:
       eventHandlers:
         - event: NodeOperatorAdded(uint256,string,address,uint64)
           handler: handleNodeOperatorAdded
-        - event: NodeOperatorActiveSet(indexed uint256,bool)
-          handler: handleNodeOperatorActiveSet
-        - event: NodeOperatorNameSet(indexed uint256,string)
-          handler: handleNodeOperatorNameSet
-        - event: NodeOperatorRewardAddressSet(indexed uint256,address)
-          handler: handleNodeOperatorRewardAddressSet
-        - event: NodeOperatorStakingLimitSet(indexed uint256,uint64)
-          handler: handleNodeOperatorStakingLimitSet
-        - event: NodeOperatorTotalStoppedValidatorsReported(indexed uint256,uint64)
-          handler: handleNodeOperatorTotalStoppedValidatorsReported
         - event: SigningKeyAdded(indexed uint256,bytes)
           handler: handleSigningKeyAdded
-        - event: SigningKeyRemoved(indexed uint256,bytes)
-          handler: handleSigningKeyRemoved
+        # - event: NodeOperatorActiveSet(indexed uint256,bool)
+        #   handler: handleNodeOperatorActiveSet
+        # - event: NodeOperatorNameSet(indexed uint256,string)
+        #   handler: handleNodeOperatorNameSet
+        # - event: NodeOperatorRewardAddressSet(indexed uint256,address)
+        #   handler: handleNodeOperatorRewardAddressSet
+        # - event: NodeOperatorStakingLimitSet(indexed uint256,uint64)
+        #   handler: handleNodeOperatorStakingLimitSet
+        # - event: NodeOperatorTotalStoppedValidatorsReported(indexed uint256,uint64)
+        #   handler: handleNodeOperatorTotalStoppedValidatorsReported
+        # - event: SigningKeyRemoved(indexed uint256,bytes)
+        #   handler: handleSigningKeyRemoved
       file: ./src/NodeOperatorsRegistry.ts
-  

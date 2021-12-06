@@ -1,23 +1,13 @@
 import { BigInt } from '@graphprotocol/graph-ts'
 import {
-  MemberAdded,
-  MemberRemoved,
-  QuorumChanged,
+  
   Completed,
-  ContractVersionSet,
-  PostTotalShares,
-  BeaconReported,
-  BeaconSpecSet,
-  ExpectedEpochIdUpdated,
-  BeaconReportReceiverSet,
-  AllowedBeaconBalanceRelativeDecreaseSet,
-  AllowedBeaconBalanceAnnualRelativeIncreaseSet,
+  
+  PostTotalShares,  
 } from '../generated/LidoOracle/LidoOracle'
 import {
-  OracleCompleted,
-  
-  TotalReward,
-  
+  OracleCompleted,  
+  TotalReward,  
   Totals,
   NodeOperatorsShares,
   LidoEvent,

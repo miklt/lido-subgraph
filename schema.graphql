@@ -1,10 +1,37 @@
+
+
+
+type LidoEvent @entity {
+  id: ID!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!   
+  totalPooledEtherAfter: BigInt! # 
+  totalPooledEtherBefore: BigInt!
+  totalSharesAfter: BigInt!  
+  totalShareBefore: BigInt!  
+  tokenAmount: BigInt!
+  balanceAfter: BigInt!
+  from: Bytes!
+  to: Bytes!
+  # LidoSubmission
+  sender: Bytes!
+  # TotalReward
+  totalRewards: BigInt
+  totalRewardsWithFees: BigInt
+  totalFee: BigInt
+  shares2mint: BigInt
+  sharesToInsuranceFund: BigInt
+  sharesToOperators: BigInt
+  sharesToTreasury:BigInt
+  aprBeforeFees: BigDecimal
+  apr: BigDecimal
+
+}
 type OracleCompleted @entity {
   id: ID!
-
   epochId: BigInt!
   beaconBalance: BigInt!
   beaconValidators: BigInt!
-
   block: BigInt!
   blockTime: BigInt!
   transactionHash: Bytes!
@@ -12,7 +39,6 @@ type OracleCompleted @entity {
 
 type TotalReward @entity {
   id: ID!
-
   totalRewards: BigInt!
   totalRewardsWithFees: BigInt!
 
@@ -105,91 +131,6 @@ type LidoTransfer @entity {
 }
 
 
-type LidoEvent @entity {
-  id: ID!
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  type: String!
-  # LidoTransfer
-  totalPooledEtherAfter: BigInt! # 
-  totalPooledEtherBefore: BigInt!
-  totalSharesAfter: BigInt!  
-  totalShareBefore: BigInt!  
-  transferAmount: BigInt!
-  balanceAfter: BigInt!
-  from: Bytes!
-  to: Bytes!
-  # LidoSubmission
-  sender: Bytes!
-  # TotalReward
-  totalRewards: BigInt
-  totalRewardsWithFees: BigInt
-  totalFee: BigInt
-  shares2mint: BigInt
-  sharesToInsuranceFund: BigInt
-  sharesToOperators: BigInt
-  sharesToTreasury:BigInt
-  aprBeforeFees: BigDecimal
-  apr: BigDecimal
-
-}
-
-#"""
-#Lido
-#"""
-# type LidoStopped @entity {
-#   id: ID!
-
-#   block: BigInt!
-#   blockTime: BigInt!
-# }
-
-# type LidoResumed @entity {
-#   id: ID!
-
-#   block: BigInt!
-#   blockTime: BigInt!
-# }
-
-
-# type LidoApproval @entity {
-#   id: ID!
-
-#   owner: Bytes!
-#   spender: Bytes!
-#   value: BigInt!
-# }
-
-# type LidoFee @entity {
-#   id: ID!
-
-#   feeBasisPoints: Int!
-# }
-
-# type LidoFeeDistribution @entity {
-#   id: ID!
-
-#   treasuryFeeBasisPoints: Int!
-#   insuranceFeeBasisPoints: Int!
-#   operatorsFeeBasisPoints: Int!
-# }
-
-# type LidoWithdrawalCredential @entity {
-#   id: ID!
-
-#   withdrawalCredentials: Bytes!
-
-#   block: BigInt!
-#   blockTime: BigInt!
-# }
-
-
-
-# type LidoUnbuffered @entity {
-#   id: ID!
-
-#   amount: BigInt!
-# }
 
 type LidoWithdrawal @entity {
   id: ID!
@@ -236,74 +177,6 @@ type Holder @entity {
   address: Bytes!
 }
 
-"""
-LidoOracle
-"""
-
-
-# type OracleMember @entity {
-#   id: ID!
-
-#   member: Bytes!
-#   removed: Boolean!
-# }
-
-# type OracleQuorumChange @entity {
-#   id: ID!
-
-#   quorum: BigInt!
-# }
-
-# type OracleVersion @entity {
-#   id: ID!
-
-#   version: BigInt!
-
-#   block: BigInt!
-#   blockTime: BigInt!
-# }
-
-# type AllowedBeaconBalanceRelativeDecrease @entity {
-#   id: ID!
-
-#   value: BigInt!
-# }
-
-# type AllowedBeaconBalanceAnnualRelativeIncrease @entity {
-#   id: ID!
-
-#   value: BigInt!
-# }
-
-# type OracleExpectedEpoch @entity {
-#   id: ID!
-
-#   epochId: BigInt!
-# }
-
-# type BeaconReport @entity {
-#   id: ID!
-
-#   epochId: BigInt!
-#   beaconBalance: BigInt!
-#   beaconValidators: BigInt!
-#   caller: Bytes!
-# }
-
-# type BeaconSpec @entity {
-#   id: ID!
-
-#   epochsPerFrame: BigInt!
-#   slotsPerEpoch: BigInt!
-#   secondsPerSlot: BigInt!
-#   genesisTime: BigInt!
-# }
-
-# type BeaconReportReceiver @entity {
-#   id: ID!
-
-#   callback: Bytes!
-# }
 
 #"""
 #NodeOperatorsRegistry
