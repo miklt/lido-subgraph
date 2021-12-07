@@ -77,16 +77,4 @@ dataSources:
           handler: handleNodeOperatorAdded
         - event: SigningKeyAdded(indexed uint256,bytes)
           handler: handleSigningKeyAdded
-        # - event: NodeOperatorActiveSet(indexed uint256,bool)
-        #   handler: handleNodeOperatorActiveSet
-        # - event: NodeOperatorNameSet(indexed uint256,string)
-        #   handler: handleNodeOperatorNameSet
-        # - event: NodeOperatorRewardAddressSet(indexed uint256,address)
-        #   handler: handleNodeOperatorRewardAddressSet
-        # - event: NodeOperatorStakingLimitSet(indexed uint256,uint64)
-        #   handler: handleNodeOperatorStakingLimitSet
-        # - event: NodeOperatorTotalStoppedValidatorsReported(indexed uint256,uint64)
-        #   handler: handleNodeOperatorTotalStoppedValidatorsReported
-        # - event: SigningKeyRemoved(indexed uint256,bytes)
-        #   handler: handleSigningKeyRemoved
       file: ./src/NodeOperatorsRegistry.ts

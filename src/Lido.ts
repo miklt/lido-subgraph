@@ -12,13 +12,12 @@ import {
   LidoTransfer,  
   LidoSubmission,  
   LidoWithdrawal,  
-  TotalReward,
-  NodeOperatorFees,
+  TotalReward,  
   Totals,
-  NodeOperatorsShares,
+  
   Shares,
   Holder,
-  LidoEvent,
+  LidoTokenData,
 } from '../generated/schema'
 
 import { ZERO, getAddress, DUST_BOUNDARY } from './constants'
@@ -28,9 +27,9 @@ import { ZERO, getAddress, DUST_BOUNDARY } from './constants'
 
 export function handleTransfer(event: Transfer): void {
   // new lido event.
-  let lidoEvent = LidoEvent.load(event.transaction.hash.toHex()) 
+  let lidoEvent = LidoTokenData.load(event.transaction.hash.toHex()) 
   if (lidoEvent == null){
-    lidoEvent = new LidoEvent(
+    lidoEvent = new LidoTokenData(
       event.transaction.hash.toHex() 
     )
   }
@@ -129,24 +128,7 @@ export function handleTransfer(event: Transfer): void {
     // Handling node operator fee transfer to node operator
 
     // Entity should be existent at this point
-    let nodeOperatorsShares = NodeOperatorsShares.load(
-      event.transaction.hash.toHex() + '-' + event.params.to.toHexString()
-    ) as NodeOperatorsShares
-
-    let sharesToOperator = nodeOperatorsShares.shares
-
-    entity.shares = sharesToOperator
-
-    let nodeOperatorFees = new NodeOperatorFees(
-      event.transaction.hash.toHex() + '-' + event.logIndex.toString()
-    )
-
-    // Reference to TotalReward entity
-    nodeOperatorFees.totalReward = event.transaction.hash.toHex()
-
-    nodeOperatorFees.address = event.params.to
-    nodeOperatorFees.fee = event.params.value
-
+    
     totalRewardsEntity.totalRewards = totalRewardsEntity.totalRewards.minus(
       event.params.value
     )
@@ -154,8 +136,7 @@ export function handleTransfer(event: Transfer): void {
       event.params.value
     )
 
-    totalRewardsEntity.save()
-    nodeOperatorFees.save()
+    totalRewardsEntity.save()    
   }
 
   if (entity.shares) {
@@ -216,11 +197,11 @@ export function handleTransfer(event: Transfer): void {
     lidoEvent.totalRewardsWithFees = totalRewardsEntity.totalRewardsWithFees
     lidoEvent.shares2mint = totalRewardsEntity.shares2mint       
     lidoEvent.totalPooledEtherBefore = totalRewardsEntity.totalPooledEtherBefore
-    lidoEvent.totalShareBefore = totalRewardsEntity.totalSharesBefore 
+    lidoEvent.totalSharesBefore = totalRewardsEntity.totalSharesBefore 
   }
   if (!fromZeros){
     lidoEvent.totalPooledEtherBefore = lidoEvent.totalPooledEtherAfter
-    lidoEvent.totalShareBefore = lidoEvent.totalSharesAfter
+    lidoEvent.totalSharesBefore = lidoEvent.totalSharesAfter
   }
 
   lidoEvent.save()
@@ -251,9 +232,9 @@ export function handleSubmit(event: Submitted): void {
   let entity = new LidoSubmission(
     event.transaction.hash.toHex() + '-' + event.logIndex.toString()
   )
-  let lidoEvent = LidoEvent.load(event.transaction.hash.toHex()) 
+  let lidoEvent = LidoTokenData.load(event.transaction.hash.toHex()) 
   if (lidoEvent == null){
-    lidoEvent = new LidoEvent(
+    lidoEvent = new LidoTokenData(
       event.transaction.hash.toHex() 
     )
   }
@@ -324,7 +305,7 @@ export function handleSubmit(event: Submitted): void {
   lidoEvent.sender = entity.sender  
   lidoEvent.totalPooledEtherBefore = entity.totalPooledEtherBefore
   lidoEvent.totalPooledEtherAfter = entity.totalPooledEtherAfter
-  lidoEvent.totalShareBefore = entity.totalSharesBefore
+  lidoEvent.totalSharesBefore = entity.totalSharesBefore
   lidoEvent.totalSharesAfter = entity.totalSharesAfter
   lidoEvent.save()
 }
@@ -334,9 +315,9 @@ export function handleWithdrawal(event: Withdrawal): void {
   let entity = new LidoWithdrawal(
     event.transaction.hash.toHex() + '-' + event.logIndex.toString()
   )
-  let lidoEvent = LidoEvent.load(event.transaction.hash.toHex()) 
+  let lidoEvent = LidoTokenData.load(event.transaction.hash.toHex()) 
   if (lidoEvent == null){
-    lidoEvent = new LidoEvent(
+    lidoEvent = new LidoTokenData(
       event.transaction.hash.toHex() 
     )
   }

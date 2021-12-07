@@ -10,7 +10,7 @@ import {
   TotalReward,  
   Totals,
   NodeOperatorsShares,
-  LidoEvent,
+  LidoTokenData,
 } from '../generated/schema'
 
 import { CALCULATION_UNIT, DEPOSIT_AMOUNT, ZERO } from './constants'
@@ -36,9 +36,9 @@ export function handleCompleted(event: Completed): void {
       guessOracleRunsTotal(event.block.timestamp)
     )
   )
-  let lidoEvent = LidoEvent.load(event.transaction.hash.toHex()) 
+  let lidoEvent = LidoTokenData.load(event.transaction.hash.toHex()) 
   if (lidoEvent == null){
-    lidoEvent = new LidoEvent(
+    lidoEvent = new LidoTokenData(
       event.transaction.hash.toHex() 
     )
   }
@@ -157,22 +157,10 @@ export function handleCompleted(event: Completed): void {
 
   let sharesToOperatorsActual = ZERO
 
-  for (let i = 0; i < opAddresses.length; i++) {
-    let addr = opAddresses[i]
+  for (let i = 0; i < opAddresses.length; i++) {    
     let shares = opShares[i]
-
     // Incrementing total of actual shares distributed
     sharesToOperatorsActual = sharesToOperatorsActual.plus(shares)
-
-    let nodeOperatorsShares = new NodeOperatorsShares(
-      event.transaction.hash.toHex() + '-' + addr.toHexString()
-    )
-    nodeOperatorsShares.totalReward = event.transaction.hash.toHex()
-
-    nodeOperatorsShares.address = addr
-    nodeOperatorsShares.shares = shares
-
-    nodeOperatorsShares.save()
   }
 
   // Handling dust (rounding leftovers)
@@ -187,7 +175,11 @@ export function handleCompleted(event: Completed): void {
   totalRewardsEntity.save()
   lidoEvent.totalPooledEtherBefore = totalRewardsEntity.totalPooledEtherBefore
   lidoEvent.totalPooledEtherAfter = totalRewardsEntity.totalPooledEtherAfter
-  lidoEvent.totalShareBefore = totalRewardsEntity.totalPooledEtherBefore
+  lidoEvent.totalSharesBefore = totalRewardsEntity.totalPooledEtherBefore
+  lidoEvent.sharesToTreasury = sharesToTreasury
+  lidoEvent.sharesToInsuranceFund = sharesToInsuranceFund
+  lidoEvent.sharesToOperators = sharesToOperatorsActual
+  lidoEvent.shares2mint = shares2mint
   lidoEvent.save()
 }
 
@@ -195,9 +187,9 @@ export function handleCompleted(event: Completed): void {
 
 export function handlePostTotalShares(event: PostTotalShares): void {
   let contract = loadLidoContract()
-  let lidoEvent = LidoEvent.load(event.transaction.hash.toHex()) as LidoEvent
+  let lidoEvent = LidoTokenData.load(event.transaction.hash.toHex()) as LidoTokenData
   if (lidoEvent == null){
-    lidoEvent = new LidoEvent(
+    lidoEvent = new LidoTokenData(
       event.transaction.hash.toHex() 
     )
   }

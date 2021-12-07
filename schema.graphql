@@ -1,21 +1,19 @@
 
 
 
-type LidoEvent @entity {
+type LidoTokenData @entity {
   id: ID!
   blockNumber: BigInt!
   blockTimestamp: BigInt!   
   totalPooledEtherAfter: BigInt! # 
   totalPooledEtherBefore: BigInt!
   totalSharesAfter: BigInt!  
-  totalShareBefore: BigInt!  
+  totalSharesBefore: BigInt!  
   tokenAmount: BigInt!
   balanceAfter: BigInt!
   from: Bytes!
-  to: Bytes!
-  # LidoSubmission
-  sender: Bytes!
-  # TotalReward
+  to: Bytes!  
+  sender: Bytes!  
   totalRewards: BigInt
   totalRewardsWithFees: BigInt
   totalFee: BigInt
@@ -150,13 +148,6 @@ type NodeOperatorFees @entity {
   fee: BigInt!
 }
 
-type NodeOperatorsShares @entity {
-  id: ID!
-  totalReward: TotalReward!
-
-  address: Bytes!
-  shares: BigInt!
-}
 
 type Totals @entity {
   id: ID!
@@ -198,4 +189,12 @@ type NodeOperator @entity {
   stakingLimit: BigInt!
   active: Boolean!
   totalStoppedValidators: BigInt
+}
+
+type NodeOperatorsShares @entity {
+  id: ID!
+  totalReward: TotalReward!
+
+  address: Bytes!
+  shares: BigInt!
 }
