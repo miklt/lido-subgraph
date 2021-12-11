@@ -29,29 +29,23 @@ import {
   NodeOperatorsShares,
 } from '../generated/schema'
 
-import { CALCULATION_UNIT, DEPOSIT_AMOUNT, ZERO } from './constants'
+import { CALCULATION_UNIT, DEPOSIT_AMOUNT, ZERO, ONE } from './constants'
 
 import { loadLidoContract, loadNosContract } from './contracts'
 
-import {
-  nextIncrementalId,
-  lastIncrementalId,
-  guessOracleRunsTotal,
-} from './utils'
+import { lastIncrementalId, guessOracleRunsTotal } from './utils'
 
 export function handleCompleted(event: Completed): void {
-  let previousCompleted = OracleCompleted.load(
-    lastIncrementalId(
-      'OracleCompleted',
-      guessOracleRunsTotal(event.block.timestamp)
-    )
+  let previousCompletedId = lastIncrementalId(
+    'OracleCompleted',
+    guessOracleRunsTotal(event.block.timestamp)
   )
-  let newCompleted = new OracleCompleted(
-    nextIncrementalId(
-      'OracleCompleted',
-      guessOracleRunsTotal(event.block.timestamp)
-    )
-  )
+  let nextCompletedId = BigInt.fromString(previousCompletedId)
+    .plus(ONE)
+    .toString()
+
+  let previousCompleted = OracleCompleted.load(previousCompletedId)
+  let newCompleted = new OracleCompleted(nextCompletedId)
 
   let contract = loadLidoContract()
 
@@ -64,16 +58,6 @@ export function handleCompleted(event: Completed): void {
   newCompleted.transactionHash = event.transaction.hash
 
   newCompleted.save()
-
-  // Create an empty TotalReward entity that will be filled on Transfer events
-  // We know that in this transaction there will be Transfer events which we can identify by existence of TotalReward entity with transaction hash as its id
-  let totalRewardsEntity = new TotalReward(event.transaction.hash.toHex())
-
-  totalRewardsEntity.block = event.block.number
-  totalRewardsEntity.blockTime = event.block.timestamp
-  totalRewardsEntity.transactionIndex = event.transaction.index
-  totalRewardsEntity.logIndex = event.logIndex
-  totalRewardsEntity.transactionLogIndex = event.transactionLogIndex
 
   let oldBeaconValidators = previousCompleted
     ? previousCompleted.beaconValidators
@@ -94,14 +78,6 @@ export function handleCompleted(event: Completed): void {
 
   let positiveRewards = newTotalRewards.gt(ZERO)
 
-  totalRewardsEntity.totalRewardsWithFees = newTotalRewards
-  // Setting totalRewards to totalRewardsWithFees so we can subtract fees from it
-  totalRewardsEntity.totalRewards = newTotalRewards
-  // Setting initial 0 value so we can add fees to it
-  totalRewardsEntity.totalFee = ZERO
-
-  // Will save later, still need to add shares data
-
   // Totals and rewards data logic
   // Totals are already non-null on first oracle report
   let totals = Totals.load('') as Totals
@@ -110,12 +86,35 @@ export function handleCompleted(event: Completed): void {
   let totalPooledEtherBefore = totals.totalPooledEther
   let totalSharesBefore = totals.totalShares
 
-  let feeBasis = BigInt.fromI32(contract.getFee()) // 1000
-
   // Increasing or decreasing totals
   let totalPooledEtherAfter = positiveRewards
     ? totals.totalPooledEther.plus(newTotalRewards)
     : totals.totalPooledEther.minus(newTotalRewards.abs())
+
+  // There are no rewards so we don't need a new TotalReward entity
+  if (!positiveRewards) {
+    totals.totalPooledEther = totalPooledEtherAfter
+    return
+  }
+
+  // Create an empty TotalReward entity that will be filled on Transfer events
+  // We know that in this transaction there will be Transfer events which we can identify by existence of TotalReward entity with transaction hash as its id
+  let totalRewardsEntity = new TotalReward(event.transaction.hash.toHex())
+
+  // Saving meta values
+  totalRewardsEntity.block = event.block.number
+  totalRewardsEntity.blockTime = event.block.timestamp
+  totalRewardsEntity.transactionIndex = event.transaction.index
+  totalRewardsEntity.logIndex = event.logIndex
+  totalRewardsEntity.transactionLogIndex = event.transactionLogIndex
+
+  totalRewardsEntity.totalRewardsWithFees = newTotalRewards
+  // Setting totalRewards to totalRewardsWithFees so we can subtract fees from it
+  totalRewardsEntity.totalRewards = newTotalRewards
+  // Setting initial 0 value so we can add fees to it
+  totalRewardsEntity.totalFee = ZERO
+
+  let feeBasis = BigInt.fromI32(contract.getFee()) // 1000
 
   // Overall shares for all rewards cut
   let shares2mint = positiveRewards
@@ -245,7 +244,11 @@ export function handleContractVersionSet(event: ContractVersionSet): void {
 export function handlePostTotalShares(event: PostTotalShares): void {
   let contract = loadLidoContract()
 
-  let entity = TotalReward.load(event.transaction.hash.toHex()) as TotalReward
+  let entity = TotalReward.load(event.transaction.hash.toHex())
+
+  if (!entity) {
+    return
+  }
 
   let preTotalPooledEther = event.params.preTotalPooledEther
   let postTotalPooledEther = event.params.postTotalPooledEther
@@ -255,12 +258,39 @@ export function handlePostTotalShares(event: PostTotalShares): void {
   entity.timeElapsed = event.params.timeElapsed
   entity.totalShares = event.params.totalShares
 
-  let aprBeforeFees = postTotalPooledEther
+  /**
+  
+  aprRaw -> aprBeforeFees -> apr
+  
+  aprRaw - APR straight from validator balances without adjustments
+  aprBeforeFees - APR compensated for time difference between oracle reports
+  apr - APR with fees subtracted and time-compensated
+  
+  **/
+
+  // APR without subtracting fees and without any compensations
+  let aprRaw = postTotalPooledEther
     .toBigDecimal()
     .div(preTotalPooledEther.toBigDecimal())
     .minus(BigInt.fromI32(1).toBigDecimal())
     .times(BigInt.fromI32(100).toBigDecimal())
     .times(BigInt.fromI32(365).toBigDecimal())
+
+  entity.aprRaw = aprRaw
+
+  // Time compensation logic
+
+  let timeElapsed = event.params.timeElapsed
+
+  let day = BigInt.fromI32(60 * 60 * 24).toBigDecimal()
+
+  let dayDifference = timeElapsed.toBigDecimal().div(day)
+
+  let aprBeforeFees = aprRaw.div(dayDifference)
+
+  entity.aprBeforeFees = aprBeforeFees
+
+  // Subtracting fees
 
   let feeBasis = BigInt.fromI32(contract.getFee()).toBigDecimal() // 1000
 
@@ -271,7 +301,6 @@ export function handlePostTotalShares(event: PostTotalShares): void {
       .div(BigInt.fromI32(100).toBigDecimal())
   )
 
-  entity.aprBeforeFees = aprBeforeFees
   entity.apr = apr
 
   entity.block = event.block.number

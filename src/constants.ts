@@ -1,16 +1,54 @@
 import { BigInt, Address, TypedMap } from '@graphprotocol/graph-ts'
 import { dataSource } from '@graphprotocol/graph-ts'
 
+const network = dataSource.network()
+const isMainnet = network == 'mainnet'
+
+/**
+Units
+**/
+
 export const ZERO = BigInt.fromI32(0)
+export const ONE = BigInt.fromI32(1)
 
 export const CALCULATION_UNIT = BigInt.fromI32(10000)
 
-export const WEI = BigInt.fromString('1000000000000000000')
+// 1 ETH in WEI
+export const ETHER = BigInt.fromString('1000000000000000000')
+
+/**
+Deposits
+**/
 
 export const DEPOSIT_SIZE = BigInt.fromI32(32)
-export const DEPOSIT_AMOUNT = DEPOSIT_SIZE.times(WEI)
+export const DEPOSIT_AMOUNT = DEPOSIT_SIZE.times(ETHER) // in Wei
 
+/**
+Oracle
+**/
+
+// Buffer of oracle runs if we underestimated the number
+export const ORACLE_RUNS_BUFFER = BigInt.fromI32(50)
+
+export const MAINNET_FIRST_ORACLE_REPORT = BigInt.fromI32(1610016625)
+export const TESTNET_FIRST_ORACLE_REPORT = BigInt.fromI32(1617282681)
+
+// Oracle report period is dependent on network (eg much often on testnet)
+export const MAINNET_ORACLE_PERIOD = BigInt.fromI32(86400) // A day
+export const TESTNET_ORACLE_PERIOD = BigInt.fromI32(3840) // 10 epochs by ~6.4 minutes
+
+// Anything below this we will be consider rounding leftovers
 export const DUST_BOUNDARY = BigInt.fromI32(50000)
+
+export const getFirstOracleReport = (): BigInt =>
+  isMainnet ? MAINNET_FIRST_ORACLE_REPORT : TESTNET_FIRST_ORACLE_REPORT
+
+export const getOraclePeriod = (): BigInt =>
+  isMainnet ? MAINNET_ORACLE_PERIOD : TESTNET_ORACLE_PERIOD
+
+/**
+Addresses
+**/
 
 const LIDO_ADDRESSES = new TypedMap<string, string>()
 LIDO_ADDRESSES.set('mainnet', '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84')
@@ -23,8 +61,6 @@ NOS_ADDRESSES.set('goerli', '0x9D4AF1Ee19Dad8857db3a45B0374c81c8A1C6320')
 const TREASURY_ADDRESSES = new TypedMap<string, string>()
 TREASURY_ADDRESSES.set('mainnet', '0x3e40D73EB977Dc6a537aF587D48316feE66E9C8c')
 TREASURY_ADDRESSES.set('goerli', '0x4333218072D5d7008546737786663c38B4D561A4')
-
-let network = dataSource.network()
 
 export const getAddress = (contract: string): Address =>
   Address.fromString(

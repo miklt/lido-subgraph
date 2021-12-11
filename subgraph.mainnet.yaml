@@ -141,4 +141,139 @@ dataSources:
         - event: SigningKeyRemoved(indexed uint256,bytes)
           handler: handleSigningKeyRemoved
       file: ./src/NodeOperatorsRegistry.ts
+<<<<<<< HEAD
   
+=======
+  - kind: ethereum/contract
+    name: Voting
+    network: mainnet
+    source:
+      address: '0x2e59A20f205bB85a89C53f1936454680651E618e'
+      abi: Voting
+      startBlock: 11473216
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Voting
+        - Vote
+        - ChangedSupportRequired
+        - ChangedMinQuorum
+      abis:
+        - name: Voting
+          file: ./abis/Voting.json
+      eventHandlers:
+        - event: StartVote(indexed uint256,indexed address,string)
+          handler: handleStartVote
+        - event: CastVote(indexed uint256,indexed address,bool,uint256)
+          handler: handleCastVote
+        - event: ExecuteVote(indexed uint256)
+          handler: handleExecuteVote
+        - event: ChangeSupportRequired(uint64)
+          handler: handleChangeSupportRequired
+        - event: ChangeMinQuorum(uint64)
+          handler: handleChangeMinQuorum
+      file: ./src/Voting.ts
+  - kind: ethereum/contract
+    name: Easytrack
+    network: mainnet
+    source:
+      address: '0xF0211b7660680B49De1A7E9f25C65660F0a13Fea'
+      abi: Easytrack
+      startBlock: 13676720
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Motion
+        - EasyTrackConfig
+        - Role
+        - EVMScriptFactory
+        - Objection
+      abis:
+        - name: Easytrack
+          file: ./abis/Easytrack.json
+      eventHandlers:
+        - event: EVMScriptExecutorChanged(indexed address)
+          handler: handleEVMScriptExecutorChanged
+        - event: EVMScriptFactoryAdded(indexed address,bytes)
+          handler: handleEVMScriptFactoryAdded
+        - event: EVMScriptFactoryRemoved(indexed address)
+          handler: handleEVMScriptFactoryRemoved
+        - event: MotionCanceled(indexed uint256)
+          handler: handleMotionCanceled
+        - event: MotionCreated(indexed uint256,address,indexed address,bytes,bytes)
+          handler: handleMotionCreated
+        - event: MotionDurationChanged(uint256)
+          handler: handleMotionDurationChanged
+        - event: MotionEnacted(indexed uint256)
+          handler: handleMotionEnacted
+        - event: MotionObjected(indexed uint256,indexed address,uint256,uint256,uint256)
+          handler: handleMotionObjected
+        - event: MotionRejected(indexed uint256)
+          handler: handleMotionRejected
+        - event: MotionsCountLimitChanged(uint256)
+          handler: handleMotionsCountLimitChanged
+        - event: ObjectionsThresholdChanged(uint256)
+          handler: handleObjectionsThresholdChanged
+        - event: Paused(address)
+          handler: handlePaused
+        - event: Unpaused(address)
+          handler: handleUnpaused
+        - event: RoleAdminChanged(indexed bytes32,indexed bytes32,indexed bytes32)
+          handler: handleRoleAdminChanged
+        - event: RoleGranted(indexed bytes32,indexed address,indexed address)
+          handler: handleRoleGranted
+        - event: RoleRevoked(indexed bytes32,indexed address,indexed address)
+          handler: handleRoleRevoked
+      file: ./src/Easytrack.ts
+  - kind: ethereum/contract
+    name: DepositSecurityModule
+    network: mainnet
+    source:
+      address: '0xDb149235B6F40dC08810AA69869783Be101790e7'
+      abi: DepositSecurityModule
+      startBlock: 13492688
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - DepositSecurityModuleSettings
+        - DepositsPause
+        - DepositsUnpause
+        - Guardian
+        - GuardianQuorumChange
+        - MaxDepositsChange
+        - MinDepositBlockDistanceChange
+        - NodeOperatorsRegistryChange
+        - OwnerChange
+        - PauseIntentValidityPeriodBlocksChange
+      abis:
+        - name: DepositSecurityModule
+          file: ./abis/DepositSecurityModule.json
+      eventHandlers:
+        - event: DepositsPaused(address)
+          handler: handleDepositsPaused
+        - event: DepositsUnpaused()
+          handler: handleDepositsUnpaused
+        - event: GuardianAdded(address)
+          handler: handleGuardianAdded
+        - event: GuardianQuorumChanged(uint256)
+          handler: handleGuardianQuorumChanged
+        - event: GuardianRemoved(address)
+          handler: handleGuardianRemoved
+        - event: MaxDepositsChanged(uint256)
+          handler: handleMaxDepositsChanged
+        - event: MinDepositBlockDistanceChanged(uint256)
+          handler: handleMinDepositBlockDistanceChanged
+        - event: NodeOperatorsRegistryChanged(address)
+          handler: handleNodeOperatorsRegistryChanged
+        - event: OwnerChanged(address)
+          handler: handleOwnerChanged
+        - event: PauseIntentValidityPeriodBlocksChanged(uint256)
+          handler: handlePauseIntentValidityPeriodBlocksChanged
+      file: ./src/DepositSecurityModule.ts
+>>>>>>> 5153b02ecdbaa35acb9c5df6f739bebaa5e538a8

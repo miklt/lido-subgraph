@@ -150,6 +150,13 @@ type Totals @entity {
   totalShares: BigInt!
 }
 
+type Stats @entity {
+  id: ID!
+
+  uniqueHolders: BigInt
+  uniqueAnytimeHolders: BigInt
+}
+
 type Shares @entity {
   id: ID!
 
@@ -206,6 +213,7 @@ type TotalReward @entity {
   timeElapsed: BigInt
   totalShares: BigInt
 
+  aprRaw: BigDecimal
   aprBeforeFees: BigDecimal
   apr: BigDecimal
 
@@ -289,6 +297,8 @@ type NodeOperatorSigningKey @entity {
   operatorId: BigInt!
   pubkey: Bytes!
   removed: Boolean!
+
+  operator: NodeOperator!
 }
 
 type NodeOperator @entity {
@@ -299,4 +309,207 @@ type NodeOperator @entity {
   stakingLimit: BigInt!
   active: Boolean!
   totalStoppedValidators: BigInt
+<<<<<<< HEAD
 }
+=======
+}
+
+"""
+Voting
+"""
+type Voting @entity {
+  id: ID!
+
+  index: Int!
+  creator: Bytes!
+  metadata: String!
+  executed: Boolean!
+
+  votes: [Vote!]! @derivedFrom(field: "voting")
+}
+
+type Vote @entity {
+  id: ID!
+
+  voting: Voting!
+  voter: Bytes!
+  supports: Boolean!
+  stake: BigInt!
+}
+
+type ChangedSupportRequired @entity {
+  id: ID!
+
+  supportRequiredPct: BigInt!
+}
+
+type ChangedMinQuorum @entity {
+  id: ID!
+
+  minAcceptQuorumPct: BigInt!
+}
+
+"""
+Easytrack
+"""
+type Motion @entity {
+  id: ID!
+
+  creator: Bytes!
+  evmScriptFactory: Bytes!
+  duration: BigInt
+  startDate: BigInt!
+  snapshotBlock: BigInt!
+  objectionsAmount: BigInt!
+  objectionsAmountPct: BigInt!
+  objectionsThreshold: BigInt
+  evmScriptHash: Bytes!
+  evmScriptCalldata: Bytes!
+  status: String!
+  enacted_at: BigInt
+  canceled_at: BigInt
+  rejected_at: BigInt
+}
+
+type EasyTrackConfig @entity {
+  id: ID!
+
+  evmScriptExecutor: Bytes
+  motionDuration: BigInt
+  motionsCountLimit: BigInt
+  objectionsThreshold: BigInt
+  isPaused: Boolean
+}
+
+type Role @entity {
+  id: ID!
+
+  role: Bytes!
+  address: Bytes!
+  creator: Bytes!
+  isActive: Boolean!
+}
+
+type EVMScriptFactory @entity {
+  id: ID!
+
+  address: Bytes!
+  permissions: Bytes!
+  isActive: Boolean!
+}
+
+type Objection @entity {
+  id: ID!
+
+  motionId: BigInt!
+  objector: Bytes!
+  weight: BigInt!
+
+  block: BigInt!
+  blockTime: BigInt!
+}
+
+"""
+DepositSecurityModule
+"""
+type DepositSecurityModuleSettings @entity {
+  id: ID!
+
+  paused: Boolean
+  guardianQuorum: BigInt
+  maxDeposits: BigInt
+  minDepositBlockDistance: BigInt
+  nodeOperatorsRegistry: Bytes
+  owner: Bytes
+  pauseIntentValidityPeriodBlocks: BigInt
+}
+
+type DepositsPause @entity {
+  id: ID!
+
+  guardian: Guardian!
+
+  block: BigInt!
+  blockTime: BigInt!
+  transactionHash: Bytes!
+}
+
+type DepositsUnpause @entity {
+  id: ID!
+
+  block: BigInt!
+  blockTime: BigInt!
+  transactionHash: Bytes!
+}
+
+type Guardian @entity {
+  id: ID!
+
+  address: Bytes!
+  removed: Boolean!
+
+  block: BigInt!
+  blockTime: BigInt!
+  transactionHash: Bytes!
+}
+
+type GuardianQuorumChange @entity {
+  id: ID!
+
+  guardianQuorum: BigInt!
+
+  block: BigInt!
+  blockTime: BigInt!
+  transactionHash: Bytes!
+}
+
+type MaxDepositsChange @entity {
+  id: ID!
+
+  maxDeposits: BigInt!
+
+  block: BigInt!
+  blockTime: BigInt!
+  transactionHash: Bytes!
+}
+
+type MinDepositBlockDistanceChange @entity {
+  id: ID!
+
+  minDepositBlockDistance: BigInt!
+
+  block: BigInt!
+  blockTime: BigInt!
+  transactionHash: Bytes!
+}
+
+type NodeOperatorsRegistryChange @entity {
+  id: ID!
+
+  nodeOperatorsRegistry: Bytes!
+
+  block: BigInt!
+  blockTime: BigInt!
+  transactionHash: Bytes!
+}
+
+type OwnerChange @entity {
+  id: ID!
+
+  owner: Bytes!
+
+  block: BigInt!
+  blockTime: BigInt!
+  transactionHash: Bytes!
+}
+
+type PauseIntentValidityPeriodBlocksChange @entity {
+  id: ID!
+
+  pauseIntentValidityPeriodBlocks: BigInt!
+
+  block: BigInt!
+  blockTime: BigInt!
+  transactionHash: Bytes!
+}
+>>>>>>> 5153b02ecdbaa35acb9c5df6f739bebaa5e538a8
